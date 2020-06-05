@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
 
-
-
 export default class PlantList extends Component {
   // add state with a property called "plants" - initialize as an empty array
 
@@ -12,6 +10,7 @@ export default class PlantList extends Component {
 
   state = {
     plants: [],
+    filteredPlants: [],
     searchInput: '',
   }
 
@@ -19,18 +18,14 @@ export default class PlantList extends Component {
     axios.get('http://localhost:3333/plants')
     .then(res => {
       console.log(res)
-      this.setState({plants: res.data.plantsData})
+      this.setState({plants: res.data.plantsData, filteredPlants: res.data.plantsData})
     })
     .catch(err => {
       console.log(err)
     })
   }
 
-// const filteredList = this.state.plants.filter(plant => {
-//     return plant.name.toLowerCase().includes(this.state.searchInput.toLowerCase())
-//   })
-
-  updatedFilter = () => {this.setState({plants: this.state.plants.filter(plant=> {
+  updateFilter = () => {this.setState({filteredPlants: this.state.plants.filter(plant=> {
     return plant.name.toLowerCase().includes(this.state.searchInput.toLowerCase())
   })})}
  
@@ -42,11 +37,11 @@ export default class PlantList extends Component {
          <div className="search-bar">
           <input value={this.state.searchInput} placeholder="search for a plant" onChange={(e) => {
           this.setState({searchInput: e.target.value})}}  />
-           <button onClick={this.updatedFilter} className="plant-button">Search</button>
+           <button onClick={this.updateFilter} className="plant-button">Search</button>
         </div>
        
 
-        {this.state.plants.map((plant) => (
+        {this.state.filteredPlants.map((plant) => (
           <div className="plant-card" key={plant.id}>
             <img className="plant-image" src={plant.img} alt={plant.name} />
             <div className="plant-details">
